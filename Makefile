@@ -45,7 +45,7 @@ tarball: promu
 
 docker: crossbuild $(BUILD_DOCKER_ARCHS)
 $(BUILD_DOCKER_ARCHS): docker-%:
-	@echo ">> building docker image"
+	@echo ">> building docker images"
 	@docker build -t "$(DOCKER_IMAGE_NAME)-linux-$*:$(DOCKER_IMAGE_TAG)" \
 			--build-arg ARCH="$*" \
 			--build-arg OS="linux" \
