@@ -58,7 +58,7 @@ $(PUSH_DOCKER_ARCHS): docker-push-%:
 	@docker tag "$(DOCKER_IMAGE_NAME)-linux-$*:$(DOCKER_IMAGE_TAG)" "$(DOCKER_USERNAME)/$(DOCKER_IMAGE_NAME)-linux-$*:$(TAG)"
 	@docker push "$(DOCKER_USERNAME)/$(DOCKER_IMAGE_NAME)-linux-$*:$(TAG)"
 
-docker-manifest: crossbuild
+docker-manifest:
 	@echo ">> crossbuilding docker images"
 	@DOCKER_CLI_EXPERIMENTAL=enabled docker manifest create -a "$(DOCKER_USERNAME)/$(DOCKER_IMAGE_NAME):$(DOCKER_IMAGE_TAG)" $(foreach ARCH,$(DOCKER_ARCHS),$(DOCKER_USERNAME)/$(DOCKER_IMAGE_NAME)-linux-$(ARCH):$(DOCKER_IMAGE_TAG))
 	@DOCKER_CLI_EXPERIMENTAL=enabled docker manifest push "$(DOCKER_USERNAME)/$(DOCKER_IMAGE_NAME):$(DOCKER_IMAGE_TAG)"
