@@ -61,8 +61,8 @@ $(PUSH_DOCKER_ARCHS): docker-push-%:
 
 docker-manifest:
 	@echo ">> crossbuilding docker images"
-	@DOCKER_CLI_EXPERIMENTAL=enabled docker manifest create -a "$(DOCKER_USERNAME)/$(DOCKER_IMAGE_NAME):$(DOCKER_IMAGE_TAG)" $(foreach ARCH,$(DOCKER_ARCHS),$(DOCKER_USERNAME)/$(DOCKER_IMAGE_NAME)-linux-$(ARCH):$(DOCKER_IMAGE_TAG))
-	@DOCKER_CLI_EXPERIMENTAL=enabled docker manifest push "$(DOCKER_USERNAME)/$(DOCKER_IMAGE_NAME):$(DOCKER_IMAGE_TAG)"
+	@DOCKER_CLI_EXPERIMENTAL=enabled docker manifest create -a "$(DOCKER_USERNAME)/$(DOCKER_IMAGE_NAME):$(TAG)" $(foreach ARCH,$(DOCKER_ARCHS),$(DOCKER_USERNAME)/$(DOCKER_IMAGE_NAME)-linux-$(ARCH):$(TAG))
+	@DOCKER_CLI_EXPERIMENTAL=enabled docker manifest push "$(DOCKER_USERNAME)/$(DOCKER_IMAGE_NAME):$(TAG)"
 
 release: promu github-release
 	@echo ">> pushing binary to github with ghr"
