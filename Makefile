@@ -34,6 +34,7 @@ vet:
 build: promu
 	@echo ">> building binaries"
 	@$(PROMU) build --prefix $(PREFIX)
+	@$(GO) mod vendor
 
 crossbuild: promu
 	@echo ">> crossbuilding binaries"
