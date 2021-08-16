@@ -7,6 +7,7 @@ BIN_DIR                 ?= $(shell pwd)
 DOCKER_IMAGE_NAME       ?= kafka-exporter
 DOCKER_IMAGE_TAG        ?= $(subst /,-,$(shell git rev-parse --abbrev-ref HEAD))
 TAG 					:= $(shell echo `if [ "$(TRAVIS_BRANCH)" = "master" ] || [ "$(TRAVIS_BRANCH)" = "" ] ; then echo "latest"; else echo $(TRAVIS_BRANCH) ; fi`)
+GOFLAGS                 ?= -mod=readonly
 
 DOCKER_ARCHS            ?= amd64 s390x
 
