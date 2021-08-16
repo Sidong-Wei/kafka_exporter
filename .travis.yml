@@ -8,10 +8,14 @@ language: go
 go:
 - 1.16
 
+env:
+- GOFLAGS="-mod=readonly"
+
 after_success:
 - if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
   make docker;
   make push;
+  make docker-manifest;
   fi
 - if [[ -n "$TRAVIS_TAG" ]]; then
   make crossbuild release;
