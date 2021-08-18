@@ -44,6 +44,7 @@ tarball: promu
 docker: crossbuild
 	@echo ">> building and pushing multi-arch docker images"
 	@docker login -u $(DOCKER_USERNAME) -p $(DOCKER_PASSWORD)
+	@docker buildx create --use
 	@docker buildx build -t "$(DOCKER_USERNAME)/$(DOCKER_IMAGE_NAME):$(TAG)" \
 		--output "$(PUSHTAG)" \
 		--platform $(DOCKER_PLATFORMS) \
