@@ -5,8 +5,10 @@ pkgs   = $(shell $(GO) list ./... | grep -v /vendor/)
 PREFIX                  ?= $(shell pwd)
 BIN_DIR                 ?= $(shell pwd)
 DOCKER_IMAGE_NAME       ?= kafka-exporter
-DOCKER_IMAGE_TAG        ?= $(subst /,-,$(shell git rev-parse --abbrev-ref HEAD))
 TAG 					:= $(shell echo `if [ "$(TRAVIS_BRANCH)" = "master" ] || [ "$(TRAVIS_BRANCH)" = "" ] ; then echo "latest"; else echo $(TRAVIS_BRANCH) ; fi`)
+
+PUSHTAG                 ?= type=registry,push=true
+DOCKER_PLATFORMS        ?= linux/amd64,linux/s390x
 
 all: format build test
 
@@ -29,6 +31,7 @@ vet:
 build: promu
 	@echo ">> building binaries"
 	@$(PROMU) build --prefix $(PREFIX)
+	@$(GO) mod vendor
 
 crossbuild: promu
 	@echo ">> crossbuilding binaries"
@@ -38,15 +41,14 @@ tarball: promu
 	@echo ">> building release tarball"
 	@$(PROMU) tarball --prefix $(PREFIX) $(BIN_DIR)
 
-docker: build
-	@echo ">> building docker image"
-	@docker build -t "$(DOCKER_IMAGE_NAME):$(DOCKER_IMAGE_TAG)" .
-
-push:
-	@echo ">> pushing docker image, $(DOCKER_USERNAME),$(DOCKER_IMAGE_NAME),$(TAG)"
+docker: crossbuild
+	@echo ">> building and pushing multi-arch docker images"
 	@docker login -u $(DOCKER_USERNAME) -p $(DOCKER_PASSWORD)
-	@docker tag "$(DOCKER_IMAGE_NAME):$(DOCKER_IMAGE_TAG)" "$(DOCKER_USERNAME)/$(DOCKER_IMAGE_NAME):$(TAG)"
-	@docker push "$(DOCKER_USERNAME)/$(DOCKER_IMAGE_NAME):$(TAG)"
+	@docker buildx create --use
+	@docker buildx build -t "$(DOCKER_USERNAME)/$(DOCKER_IMAGE_NAME):$(TAG)" \
+		--output "$(PUSHTAG)" \
+		--platform $(DOCKER_PLATFORMS) \
+		.
 
 release: promu github-release
 	@echo ">> pushing binary to github with ghr"
