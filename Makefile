@@ -44,7 +44,9 @@ tarball: promu
 
 docker: build
 	@echo ">> building docker image"
-	@docker build -t "$(DOCKER_IMAGE_NAME):$(DOCKER_IMAGE_TAG)" .
+	@docker build -t "$(DOCKER_IMAGE_NAME):$(DOCKER_IMAGE_TAG)" \
+		--build-arg BIN_DIR=$(BIN_DIR) \
+		.
 
 push: crossbuild
 	@echo ">> building and pushing multi-arch docker images, $(DOCKER_USERNAME),$(DOCKER_IMAGE_NAME),$(TAG)"
@@ -53,7 +55,7 @@ push: crossbuild
 	@docker buildx build -t "$(DOCKER_USERNAME)/$(DOCKER_IMAGE_NAME):$(TAG)" \
 		--output "$(PUSHTAG)" \
 		--platform $(DOCKER_PLATFORMS) \
-		--file ./Dockerfile.multi-arch
+		.
 
 release: promu github-release
 	@echo ">> pushing binary to github with ghr"
